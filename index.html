@@ -330,6 +330,7 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
     };
 
     function formal(str) {//自然数やωを標準形に変換する
+        if (str != 0) {
         var numleg = /[1-9][0-9]*/;
 
         while (numleg.test(str)) {
@@ -341,13 +342,16 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
                 };
             str = str.replace(matchnum,nn);
         }
-        str = str.replace(/ω/g,"Z_{0}(Z_{0}(0))")
+        str = str.replace(/ω/g,"Z_{0}(Z_{0}(0))");
+        }
         return str;
     };
 
     function reformal(str) {//1やωに変換し直して見やすくする
+        if (str != 0) {
         str = str.replace(/Z_\{0\}\(0\)/g,"1");
         str = str.replace(/Z_\{0\}\(1\)/g,"ω");
+        }
         return str;
     }
 </Script>
