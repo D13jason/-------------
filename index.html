@@ -4,6 +4,7 @@
 <title>ふにゃふにゃぜぇたかんすう計算機</title>
 </head>
 <body>
+    <h2>ふにゃふにゃぜぇたかんすう計算機</h2>
 <form oninput="out.value = Number(num.value), out0.value = Number(num.value);" >
 <p>
 Z_{x}(y)の形式で入力してください。自然数とωも使えます。
@@ -25,7 +26,7 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
     入力B：<input name="strb" id = "strb" type="text" value = "Z_{ζ}(0)" class="txt"/> 
 </p>
 <p>
-    基本列：<input name="num" id = "num" type="number" value = "0" size="5"/>(マイナスの値は入れないで！)
+    基本列：<input name="num" id = "num" type="number" value = "0" size="5"/>
 </p>
 <p>
     <button type="button" onclick="calculate()"> 
@@ -71,7 +72,15 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
     </table> 
 </p>
 </form>
-
+<br>
+<br>
+<p>リンク</p>
+<p>
+    <a href="https://docs.google.com/document/d/15Kmx1r84DOnLbM4JpTAq0mTGbl8stLpirYD8M1TAN2M/edit?usp=sharing">ふにゃふにゃぜぇたかんすう</a>
+</p>
+<p>
+    <a href="https://d13jason.github.io/Jason-s-Calculator-Index/">計算機集</a>
+</p>
 <script>
     function calculate(){
         var area = document.getElementById("area");
@@ -206,7 +215,7 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
                 }
             }else if (dom(y) == "Z_{0}(Z_{0}(0))") {
                 f = "Z_{"+ x +"}("+ fund(y,num) +")";
-            }else if (dom(y) != 0 && dom(y) != "Z_{0}(0)" && dom(y) != "Z_{0}(Z_{0}(0))") {
+            }else if (y != 0 && dom(y) != "Z_{0}(0)" && dom(y) != "Z_{0}(Z_{0}(0))") {
                 if (larger(str,dom(y))) {
                     if (extract(dom(y))[1] == 0 && dom(extract(dom(y))[0]) == "Z_{0}(0)") {
                         var x0 = extract(dom(y))[0];
@@ -342,7 +351,7 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
                 };
             str = str.replace(matchnum,nn);
         }
-        str = str.replace(/ω/g,"Z_{0}(Z_{0}(0))");
+        str = str.replace(/ω/g,"Z_{0}(Z_{0}(0))")
         }
         return str;
     };
