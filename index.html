@@ -200,6 +200,9 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
                     var x0 = extract(dom(x))[0];
                     if (larger(0,num) && larger(num,"Z_{0}(Z_{0}(0))")) {
                         var g = extract(fund(str,fund(num,0)))[0];
+                        while (/^ζ/.test(g)) {
+                            g = g.slice(2)
+                        }
                         f = "Z_{"+ fund(x,"Z_{"+ fund(x0,g) +"}(0)") +"}("+ y +")";
                     }else{
                         f = "Z_{"+ fund(x,"Z_{"+ fund(x0,0) +"}(0)") +"}("+ y +")";
