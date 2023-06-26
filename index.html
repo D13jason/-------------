@@ -52,6 +52,13 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
 <p>
     <table>
         <tr>
+            <td>真の共終数：Tdom(A)=</td><td><div id="area4" display: inline-block></div></td>
+        </tr>
+    </table>
+</p>
+<p>
+    <table>
+        <tr>
             <td>基本列：A[<output name = "out" id = "out" >0</output>]=</td><td><div id="area1" display: inline-block></div></td>
         </tr>
     </table> 
@@ -61,6 +68,13 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
     <table>
         <tr>
             <td>共終数：dom(B)=</td><td><div id="area2" display: inline-block></div></td>
+        </tr>
+    </table>
+</p>
+<p>
+    <table>
+        <tr>
+            <td>真の共終数：Tdom(B)=</td><td><div id="area5" display: inline-block></div></td>
         </tr>
     </table>
 </p>
@@ -88,6 +102,8 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
         var area1 = document.getElementById("area1");
         var area2 = document.getElementById("area2");
         var area3 = document.getElementById("area3");
+        var area4 = document.getElementById("area4");
+        var area5 = document.getElementById("area5");
         var stra = document.getElementById("stra").value;
         var strb = document.getElementById("strb").value;
         var num = document.getElementById("num").value;
@@ -102,6 +118,9 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
         area1.innerText = reformal(fund(stra,num));
         area2.innerText = reformal(dom(strb));
         area3.innerText = reformal(fund(strb,num));
+        area4.innerText = reformal(Tdom(stra));
+        area5.innerText = reformal(Tdom(strb));
+
     };
 
     function larger(x,y) {//x<yか判定する
@@ -157,8 +176,8 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
         }else if (str == "ζ") {
             d = "ζ";
         }else if (str == rightPA(str) && extract(str)[0] != "null") {
-            var x = extract(str)[0];
-            var y = extract(str)[1];
+            let x = extract(str)[0];
+            let y = extract(str)[1];
             if (y == 0) {
                 if (x == 0) {
                     d = "Z_{0}(0)";
@@ -182,24 +201,62 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
         return d;
     }
 
+    function Tdom(str) {//真の共終数を出力
+        var d = 0;
+        if (str == 0) {
+            d = 0;
+        }else if (str == "ζ") {
+            d = "ζ";
+        }else if (str == rightPA(str) && extract(str)[0] != "null") {
+            let x = extract(str)[0];
+            let y = extract(str)[1];
+            if (y == 0) {
+                if (x == 0) {
+                    d = "Z_{0}(0)";
+                }else if (Tdom(x) == "Z_{0}(0)" || Tdom(x) == "ζ") {
+                    d = str;
+                }else if (larger(str,Tdom(x)) && extract(Tdom(x))[1] == 0 && Tdom(extract(Tdom(x))[0]) == "ζ") {
+                    d = "Z_{0}(Z_{0}(0))";
+                }else if (larger(str,dom(x)) && extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "Z_{0}(0)") {
+                    d = str;
+                }else{
+                    d = Tdom(x);
+                }
+            }else if (Tdom(y) == "Z_{0}(0)") {
+                d = "Z_{0}(Z_{0}(0))";
+            }else if (larger(str,Tdom(y))) {
+                d = "Z_{0}(Z_{0}(0))";
+            }else{
+                d = Tdom(y);
+            }
+        }else if (str != rightPA(str)) {
+            d = Tdom(rightPA(str))
+        }
+        return d;
+        
+    }
+
     function fund(str,num) {
-        var f = 0;
+        var f = "ERROR";
         if (str == 0) {
             f = 0;
         }else if (str == "ζ") {
             f = num;
         }else if (str == rightPA(str) && extract(str)[0] != "null") {
-            var x = extract(str)[0];
-            var y = extract(str)[1];
+            let x = extract(str)[0];
+            let y = extract(str)[1];
+            let Tdomx = Tdom(x);
+            let Tdomy = Tdom(y);
+
             if (y == 0) {
                 if (x == 0) {
                     f = 0;
-                }else if (dom(x) == "Z_{0}(0)" || dom(x) == "ζ") {
+                }else if (Tdomx == "Z_{0}(0)" || Tdomx == "ζ") {
                     f = num;
-                }else if (larger(str,dom(x)) && extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "ζ") {
-                    var x0 = extract(dom(x))[0];
+                }else if (larger(str,Tdomx) && extract(Tdomx)[1] == 0 && Tdom(extract(Tdomx)[0]) == "ζ") {
+                    let x0 = extract(Tdomx)[0];
                     if (larger(0,num) && larger(num,"Z_{0}(Z_{0}(0))")) {
-                        var g = extract(fund(str,fund(num,0)))[0];
+                        let g = extract(fund(str,fund(num,0)))[0];
                         while (/^ζ/.test(g)) {
                             g = g.slice(2)
                         }
@@ -210,26 +267,26 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
                 }else{
                     f = "Z_{"+ fund(x,num) +"}("+ y +")";
                 }
-            }else if (dom(y) == "Z_{0}(0)") {
+            }else if (Tdomy == "Z_{0}(0)") {
                 if (larger(0,num) && larger(num,"Z_{0}(Z_{0}(0))")) {
                     f = "Z_{"+ x +"}("+ fund(y,0) +")+"+ fund(str,fund(num,0));
                 }else{
                     f = "Z_{"+ x +"}("+ fund(y,0) +")";
                 }
-            }else if (dom(y) == "Z_{0}(Z_{0}(0))") {
+            }else if (Tdomy == "Z_{0}(Z_{0}(0))") {
                 f = "Z_{"+ x +"}("+ fund(y,num) +")";
-            }else if (y != 0 && dom(y) != "Z_{0}(0)" && dom(y) != "Z_{0}(Z_{0}(0))") {
-                if (larger(str,dom(y))) {
-                    if (extract(dom(y))[1] == 0 && dom(extract(dom(y))[0]) == "Z_{0}(0)") {
-                        var x0 = extract(dom(y))[0];
+            }else if (y != 0 && Tdomy != "Z_{0}(0)" && Tdomy != "Z_{0}(Z_{0}(0))") {
+                if (larger(str,Tdomy)) {
+                    if (extract(dom(Tdomy))[1] == 0 && dom(extract(dom(Tdomy))[0]) == "Z_{0}(0)") {//ここだけdomを使う
+                        let x0 = extract(dom(Tdomy))[0];
                         if (larger(0,num) && larger(num,"Z_{0}(Z_{0}(0))")) {
-                            var g =  extract(fund(str,fund(num,0)))[1];
+                            let g =  extract(fund(str,fund(num,0)))[1];
                             f = "Z_{"+ x +"}("+ fund(y,"Z_{"+ fund(x0,0) +"}("+ g +")") +")";
                         }else{
                             f = "Z_{"+ x +"}("+ fund(y,"Z_{"+ fund(x0,0) +"}(0)") +")";
                         }
-                    }else if (extract(dom(y))[1] == 0 && dom(extract(dom(y))[0]) == "ζ") {
-                        var x0 = extract(dom(y))[0];
+                    }else if (extract(Tdomy)[1] == 0 && Tdom(extract(Tdomy)[0]) == "ζ") {
+                        var x0 = extract(Tdomy)[0];
                         if (larger(0,num) && larger(num,"Z_{0}(Z_{0}(0))")) {
                             var g =  extract(fund(str,fund(num,0)))[1];
                             f = "Z_{"+ x +"}("+ fund(y,"Z_{"+ fund(x0,g) +"}(0)") +")";
@@ -345,16 +402,16 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
         if (str != 0) {
         var numleg = /[1-9][0-9]*/;
 
-        while (numleg.test(str)) {
-            var matchnum = str.match(numleg);
-            var n0 = parseInt(matchnum);
-            var nn = "Z_{0}(0)";
+            while (numleg.test(str)) {
+                var matchnum = str.match(numleg);
+                var n0 = parseInt(matchnum);
+                var nn = "Z_{0}(0)";
                 for (let i = 1; i < n0; i++) {
                     nn = nn + "+Z_{0}(0)";
                 };
-            str = str.replace(matchnum,nn);
-        }
-        str = str.replace(/ω/g,"Z_{0}(Z_{0}(0))")
+                str = str.replace(matchnum,nn);
+            }
+            str = str.replace(/ω/g,"Z_{0}(Z_{0}(0))")
         }
         return str;
     };
@@ -365,7 +422,7 @@ Z_{x}(y)の形式で入力してください。自然数とωも使えます。
         str = str.replace(/Z_\{0\}\(1\)/g,"ω");
         }
         return str;
-    }
+    };
 </Script>
 
 </body>
